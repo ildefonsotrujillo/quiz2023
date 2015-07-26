@@ -6,12 +6,15 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var partials = require('express-partials');
 
+////console.log("Llega aqui 1")
 var routes = require('./routes/index');
 //var users = require('./routes/users');
 
+//console.log("Llega aqui 1")
 var app = express();
 
 // view engine setup
+//console.log("Llega aqui 1")
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
@@ -24,6 +27,7 @@ app.use(cookieParser());
 app.use(partials());
 app.use(express.static(path.join(__dirname, 'public')));
 
+//console.log("Llega aqui 1")
 app.use('/', routes);
 //app.use('/users', users);
 
