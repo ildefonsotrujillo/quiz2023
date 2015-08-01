@@ -16,9 +16,24 @@ exports.load = function (req, res, next, quizId) {
 
 // GET /quizes
 exports.index = function(req, res) {
-  models.Quiz.findAll().then(function(quizes) {
-    res.render('quizes/index', { quizes: quizes});
-  }).catch(function(error){next(error);});
+  var busqueda="";
+  var texto="Resultado búsqueda: ";
+  console.log(req.query.search);
+  if(req.query.search){
+  	busqueda=req.query.search;
+  	busqueda.replace(" ","%");
+  	busqueda="%"+busqueda+"%";
+  	console.log(busqueda)
+    models.Quiz.findAll({where: ["pregunta like ?", busqueda]}).then(function(quizes) {
+      res.render('quizes/index', { quizes: quizes, search: texto+req.query.search});
+    }).catch(function(error){next(error);});	
+  }else{
+    models.Quiz.findAll().then(function(quizes) {
+      res.render('quizes/index', { quizes: quizes, search: ""});
+    }).catch(function(error){next(error);});	
+  }
+
+  
 };
 
 //console.log("Llega aqui quiz1")
