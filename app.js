@@ -5,6 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var partials = require('express-partials');
+var methodOverride = require('method-override');
 
 ////console.log("Llega aqui 1")
 var routes = require('./routes/index');
@@ -26,7 +27,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(partials());
+app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
+
 
 //console.log("Llega aqui 1")
 app.use('/', routes);
@@ -48,7 +51,8 @@ if (app.get('env') === 'development') {
         res.status(err.status || 500);
         res.render('error', {
             message: err.message,
-            error: err
+            error: err,
+            errors: []
         });
     });
 }
@@ -59,7 +63,8 @@ app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     res.render('error', {
         message: err.message,
-        error: {}
+        error: {},
+        errors: []
     });
 });
 
