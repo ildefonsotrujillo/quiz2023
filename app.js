@@ -41,9 +41,42 @@ app.use(function(req, res, next){
 
    // Hacer visible req.session en las vistas
    res.locals.session = req.session;
+
+
    next();
 });
 
+//Autologut
+app.use(function(req, res, next){
+    if(req.session.user){
+        var d= new Date().getTime();
+        
+        // Guardamos
+    
+        if(!req.session.lasttime){
+                console.log("Creamos lastime: "+d);
+                req.session.lasttime=d;
+                next();
+        }else{
+                
+                var last=Number(req.session.lasttime);;
+                var dif;
+                    dif=d-last;
+                console.log("LastTime: "+last);
+                console.log("Ahora: "+d);
+                console.log("Diferencia: "+dif);
+                if(dif>(2*60*1000)) {
+                    console.log("Salimos de la sesion: "+d);
+                        delete req.session.user;
+                        delete req.session.lasttime;
+                        res.redirect('/login');
+                }else{
+                    req.session.lasttime=d;
+                    next();   
+                }
+        }
+    }else{next();}
+});
 
 //console.log("Llega aqui 1")
 app.use('/', routes);
