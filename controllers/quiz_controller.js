@@ -4,7 +4,7 @@ var models = require('../models/models.js');
 exports.load = function (req, res, next, quizId) {
 	models.Quiz.find({
 		        		where: {id: Number(quizId)},
-		        		order: 'Comments.updatedAt DESC',
+		        		order: '"Comments.updatedAt" DESC',
     	        		include:[{
     	        			model: models.Comment,
     	        		    }]
