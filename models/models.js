@@ -29,19 +29,41 @@ var sequelize = new Sequelize(DB_name, user, pwd,
 // Importar definicion de la tabla Quiz
 var quiz_path = path.join(__dirname,'quiz');
 var Quiz = sequelize.import(quiz_path);
+var quiz_path = path.join(__dirname,'tema');
+var Tema = sequelize.import(quiz_path);
+
+Quiz.belongsTo(Tema, {as: 'Tema', foreignKey: 'tema', targetKey: 'id'});
+Tema.hasMany(Quiz, {as: 'preguntas', foreignKey: 'id', targetKey: 'tema'});
 
 exports.Quiz = Quiz; // exportar tabla Quiz
+exports.Tema = Tema; // exportar tabla Tema
+
+
 
 // sequelize.sync() inicializa tabla de preguntas en DB
 sequelize.sync().then(function() {
+    Tema.count().then(function (count){
+    if(count === 0) {   // la tabla se inicializa solo si está vacía
+      Tema.bulkCreate( 
+        [ {id: 'otro',   descripcion: 'Otro'},
+          {id: 'humanidades', descripcion: 'Humanidades'},
+          {id: 'ocio',   descripcion: 'Ocio'},
+          {id: 'ciencia',   descripcion: 'Ciencia'},
+          {id: 'tecnologia',   descripcion: 'Tecnología'}
+        ]
+      ).then(function(){console.log('Tabla Temas inicializada')});
+    };
+  });
   // then(..) ejecuta el manejador una vez creada la tabla
   Quiz.count().then(function (count){
     if(count === 0) {   // la tabla se inicializa solo si está vacía
       Quiz.bulkCreate( 
-        [ {pregunta: 'Capital de Italia',   respuesta: 'Roma'},
-          {pregunta: 'Capital de Portugal', respuesta: 'Lisboa'}
+        [ {pregunta: 'Capital de Italia',   respuesta: 'Roma', tema: 'humanidades'},
+          {pregunta: 'Capital de Portugal', respuesta: 'Lisboa', tema: 'humanidades'}
         ]
       ).then(function(){console.log('Base de datos inicializada')});
     };
   });
+  
+
 });
