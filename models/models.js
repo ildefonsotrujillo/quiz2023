@@ -29,16 +29,21 @@ var sequelize = new Sequelize(DB_name, user, pwd,
 // Importar definicion de la tabla Quiz
 var quiz_path = path.join(__dirname,'quiz');
 var Quiz = sequelize.import(quiz_path);
+// Importar definicion de la tabla Tema
 var quiz_path = path.join(__dirname,'tema');
 var Tema = sequelize.import(quiz_path);
+// Importar definicion de la tabla Comment
+var quiz_path = path.join(__dirname,'comment');
+var Comment = sequelize.import(quiz_path);
 
 Quiz.belongsTo(Tema, {as: 'Tema', foreignKey: 'tema', targetKey: 'id'});
 Tema.hasMany(Quiz, {as: 'preguntas', foreignKey: 'id', targetKey: 'tema'});
+Comment.belongsTo(Quiz);
+Quiz.hasMany(Comment);
 
 exports.Quiz = Quiz; // exportar tabla Quiz
 exports.Tema = Tema; // exportar tabla Tema
-
-
+exports.Comment = Comment; // exportar tabla Tema
 
 // sequelize.sync() inicializa tabla de preguntas en DB
 sequelize.sync().then(function() {
